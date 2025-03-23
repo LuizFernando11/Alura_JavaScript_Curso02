@@ -41,15 +41,25 @@ inputUpload.addEventListener("change", async (evento) => {
 const inputTags = document.getElementById("input-tags");
 const listaTags = document.getElementById("lista-tags");
 
-inputTags.addEventListener("keypress", (evento) => {
+inputTags.addEventListener("keypress", async (evento) => {
     if(evento.key === "Enter"){
         evento.preventDefault();
         const tagTexto = inputTags.value.trim();
         if (tagTexto !== ""){
-            const tagNova = document.createElement("li");
-            tagNova.innerHTML = `<p>${tagTexto}</p> <img src="./img/close-black.svg" class="remove-tag">`
-            listaTags.appendChild(tagNova);
-            inputTags.value = "";
+            try {
+                const tagExiste = await verificaTagsDisponiveis(tagTexto);
+                if(tagExiste){
+                    const tagNova = document.createElement("li");
+                    tagNova.innerHTML = `<p>${tagTexto}</p> <img src="./img/close-black.svg" class="remove-tag">`
+                    listaTags.appendChild(tagNova);
+                    inputTags.value = "";
+                } else{
+                    alert("Tag não foi encontrada");
+                }
+            }catch (error) {
+                console.error("Erro ao verificar a existência da tag");
+                alert("Erro ao verificar a existencia da Tag. Verifique o console.")
+            }
         }
     }
 })
